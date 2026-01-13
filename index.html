@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outil de Grille pour Dessinateurs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Avenir', 'Avenir Next', sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #000000;
+            margin-bottom: 50px;
+            font-size: 1.5em;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .controls {
+            border: 1px solid #000000;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #000000;
+            font-weight: 400;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #000000;
+            background: #ffffff;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Avenir', 'Avenir Next', sans-serif;
+        }
+
+        input[type="file"]:hover {
+            background: #000000;
+            color: #ffffff;
+        }
+
+        input[type="number"], input[type="color"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #000000;
+            font-size: 16px;
+            font-family: 'Avenir', 'Avenir Next', sans-serif;
+            background: #ffffff;
+        }
+
+        input[type="number"]:focus, input[type="color"]:focus {
+            outline: 2px solid #000000;
+            outline-offset: 2px;
+        }
+
+        input[type="color"] {
+            height: 50px;
+            cursor: pointer;
+        }
+
+        .canvas-container {
+            text-align: center;
+            margin: 40px 0;
+            border: 1px solid #000000;
+            padding: 30px;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 15px 50px;
+            font-size: 14px;
+            font-weight: 400;
+            border: 1px solid #000000;
+            background: #000000;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-family: 'Avenir', 'Avenir Next', sans-serif;
+        }
+
+        .btn-download:hover {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .btn-download:disabled {
+            background: #ffffff;
+            color: #cccccc;
+            border-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .info-text {
+            text-align: center;
+            color: #666666;
+            font-size: 13px;
+            margin-top: 30px;
+            letter-spacing: 0.5px;
+        }
+
+        .grid-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+        }
+
+        .subdivisions-section {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid #000000;
+        }
+
+        .subdivisions-section h2 {
+            font-size: 14px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+            color: #000000;
+        }
+
+        .subdivision-option {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .subdivision-option:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+            margin-right: 12px;
+            cursor: pointer;
+            border: 1px solid #000000;
+        }
+
+        .checkbox-label {
+            margin: 0;
+            font-size: 15px;
+            text-transform: none;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+        }
+
+        .subdivision-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-left: 32px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Outil de Grille pour Dessinateurs</h1>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="imageUpload">📁 Charger une image :</label>
+                <input type="file" id="imageUpload" accept="image/*">
+            </div>
+
+            <div class="grid-controls">
+                <div class="control-group">
+                    <label for="gridSize">Nombre de carrés :</label>
+                    <input type="number" id="gridSize" value="10" min="2" max="100">
+                </div>
+
+                <div class="control-group">
+                    <label for="lineWidth">Épaisseur de bordure (px) :</label>
+                    <input type="number" id="lineWidth" value="2" min="1" max="10">
+                </div>
+
+                <div class="control-group">
+                    <label for="gridColor">Couleur de la grille :</label>
+                    <input type="color" id="gridColor" value="#000000">
+                </div>
+            </div>
+
+            <div class="subdivisions-section">
+                <h2>Options de subdivision</h2>
+                
+                <div class="subdivision-option">
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="subdivide4">
+                        <label for="subdivide4" class="checkbox-label">Diviser en 4 petits carrés</label>
+                    </div>
+                    <div class="subdivision-controls">
+                        <div class="control-group">
+                            <label for="subdivide4Width">Épaisseur (px) :</label>
+                            <input type="number" id="subdivide4Width" value="1" min="1" max="10">
+                        </div>
+                        <div class="control-group">
+                            <label for="subdivide4Color">Couleur :</label>
+                            <input type="color" id="subdivide4Color" value="#666666">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subdivision-option">
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="subdivide9">
+                        <label for="subdivide9" class="checkbox-label">Diviser en 9 petits carrés</label>
+                    </div>
+                    <div class="subdivision-controls">
+                        <div class="control-group">
+                            <label for="subdivide9Width">Épaisseur (px) :</label>
+                            <input type="number" id="subdivide9Width" value="1" min="1" max="10">
+                        </div>
+                        <div class="control-group">
+                            <label for="subdivide9Color">Couleur :</label>
+                            <input type="color" id="subdivide9Color" value="#999999">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subdivision-option">
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="addCircle">
+                        <label for="addCircle" class="checkbox-label">Ajouter un cercle inscrit</label>
+                    </div>
+                    <div class="subdivision-controls">
+                        <div class="control-group">
+                            <label for="circleWidth">Épaisseur (px) :</label>
+                            <input type="number" id="circleWidth" value="1" min="1" max="10">
+                        </div>
+                        <div class="control-group">
+                            <label for="circleColor">Couleur :</label>
+                            <input type="color" id="circleColor" value="#0000ff">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-download" id="downloadBtn" disabled>Télécharger l'image avec grille</button>
+        </div>
+
+        <p class="info-text">Chargez une image et ajustez les paramètres de la grille selon vos besoins</p>
+    </div>
+
+    <script>
+        const imageUpload = document.getElementById('imageUpload');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const gridSizeInput = document.getElementById('gridSize');
+        const lineWidthInput = document.getElementById('lineWidth');
+        const gridColorInput = document.getElementById('gridColor');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        // Options de subdivision
+        const subdivide4Checkbox = document.getElementById('subdivide4');
+        const subdivide4WidthInput = document.getElementById('subdivide4Width');
+        const subdivide4ColorInput = document.getElementById('subdivide4Color');
+
+        const subdivide9Checkbox = document.getElementById('subdivide9');
+        const subdivide9WidthInput = document.getElementById('subdivide9Width');
+        const subdivide9ColorInput = document.getElementById('subdivide9Color');
+
+        const addCircleCheckbox = document.getElementById('addCircle');
+        const circleWidthInput = document.getElementById('circleWidth');
+        const circleColorInput = document.getElementById('circleColor');
+
+        let uploadedImage = null;
+
+        imageUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        uploadedImage = img;
+                        drawImageWithGrid();
+                        downloadBtn.disabled = false;
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        gridSizeInput.addEventListener('input', drawImageWithGrid);
+        lineWidthInput.addEventListener('input', drawImageWithGrid);
+        gridColorInput.addEventListener('input', drawImageWithGrid);
+
+        subdivide4Checkbox.addEventListener('change', drawImageWithGrid);
+        subdivide4WidthInput.addEventListener('input', drawImageWithGrid);
+        subdivide4ColorInput.addEventListener('input', drawImageWithGrid);
+
+        subdivide9Checkbox.addEventListener('change', drawImageWithGrid);
+        subdivide9WidthInput.addEventListener('input', drawImageWithGrid);
+        subdivide9ColorInput.addEventListener('input', drawImageWithGrid);
+
+        addCircleCheckbox.addEventListener('change', drawImageWithGrid);
+        circleWidthInput.addEventListener('input', drawImageWithGrid);
+        circleColorInput.addEventListener('input', drawImageWithGrid);
+
+        function drawImageWithGrid() {
+            if (!uploadedImage) return;
+
+            canvas.width = uploadedImage.width;
+            canvas.height = uploadedImage.height;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(uploadedImage, 0, 0);
+
+            const gridSize = parseInt(gridSizeInput.value);
+            const lineWidth = parseInt(lineWidthInput.value);
+            const gridColor = gridColorInput.value;
+
+            // Calculer la taille du carré en fonction de la plus petite dimension
+            const squareSize = Math.min(canvas.width, canvas.height) / gridSize;
+
+            // Calculer le nombre de carrés nécessaires pour chaque dimension
+            const numSquaresWidth = Math.ceil(canvas.width / squareSize);
+            const numSquaresHeight = Math.ceil(canvas.height / squareSize);
+
+            // Dessiner les subdivisions en premier (sous la grille principale)
+            if (subdivide4Checkbox.checked) {
+                drawSubdivision(squareSize, numSquaresWidth, numSquaresHeight, 2, 
+                    parseInt(subdivide4WidthInput.value), subdivide4ColorInput.value);
+            }
+
+            if (subdivide9Checkbox.checked) {
+                drawSubdivision(squareSize, numSquaresWidth, numSquaresHeight, 3, 
+                    parseInt(subdivide9WidthInput.value), subdivide9ColorInput.value);
+            }
+
+            if (addCircleCheckbox.checked) {
+                drawCircles(squareSize, numSquaresWidth, numSquaresHeight, 
+                    parseInt(circleWidthInput.value), circleColorInput.value);
+            }
+
+            // Dessiner la grille principale par-dessus
+            ctx.strokeStyle = gridColor;
+            ctx.lineWidth = lineWidth;
+
+            // Dessiner les lignes verticales
+            for (let i = 0; i <= numSquaresWidth; i++) {
+                ctx.beginPath();
+                ctx.moveTo(i * squareSize, 0);
+                ctx.lineTo(i * squareSize, canvas.height);
+                ctx.stroke();
+            }
+
+            // Dessiner les lignes horizontales
+            for (let i = 0; i <= numSquaresHeight; i++) {
+                ctx.beginPath();
+                ctx.moveTo(0, i * squareSize);
+                ctx.lineTo(canvas.width, i * squareSize);
+                ctx.stroke();
+            }
+        }
+
+        function drawSubdivision(squareSize, numSquaresWidth, numSquaresHeight, divisions, lineWidth, color) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = lineWidth;
+
+            const subSquareSize = squareSize / divisions;
+
+            for (let row = 0; row < numSquaresHeight; row++) {
+                for (let col = 0; col < numSquaresWidth; col++) {
+                    const startX = col * squareSize;
+                    const startY = row * squareSize;
+
+                    // Dessiner les subdivisions internes (sans les bords du carré principal)
+                    for (let i = 1; i < divisions; i++) {
+                        // Lignes verticales
+                        ctx.beginPath();
+                        ctx.moveTo(startX + i * subSquareSize, startY);
+                        ctx.lineTo(startX + i * subSquareSize, Math.min(startY + squareSize, canvas.height));
+                        ctx.stroke();
+
+                        // Lignes horizontales
+                        ctx.beginPath();
+                        ctx.moveTo(startX, startY + i * subSquareSize);
+                        ctx.lineTo(Math.min(startX + squareSize, canvas.width), startY + i * subSquareSize);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function drawCircles(squareSize, numSquaresWidth, numSquaresHeight, lineWidth, color) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = lineWidth;
+
+            const radius = squareSize / 2;
+
+            for (let row = 0; row < numSquaresHeight; row++) {
+                for (let col = 0; col < numSquaresWidth; col++) {
+                    const centerX = col * squareSize + squareSize / 2;
+                    const centerY = row * squareSize + squareSize / 2;
+
+                    // Vérifier que le cercle est visible dans le canvas
+                    if (centerX - radius < canvas.width && centerY - radius < canvas.height) {
+                        ctx.beginPath();
+                        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        downloadBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = 'image_avec_grille.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    </script>
+</body>
+</html>
