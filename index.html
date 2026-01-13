@@ -16,6 +16,79 @@
             background: #ffffff;
             min-height: 100vh;
             padding: 40px 20px;
+            transition: background 0.3s;
+        }
+
+        body.dark-mode {
+            background: #000000;
+        }
+
+        body.dark-mode .container {
+            color: #ffffff;
+        }
+
+        body.dark-mode .controls,
+        body.dark-mode .subdivisions-section {
+            border-color: #ffffff;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode label {
+            color: #ffffff;
+        }
+
+        body.dark-mode input[type="file"],
+        body.dark-mode input[type="number"],
+        body.dark-mode input[type="text"],
+        body.dark-mode input[type="checkbox"],
+        body.dark-mode input[type="range"] {
+            border-color: #ffffff;
+            background: #000000;
+            color: #ffffff;
+        }
+
+        body.dark-mode input[type="file"]:hover {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        body.dark-mode .canvas-container {
+            border-color: #ffffff;
+            background: #000000;
+        }
+
+        body.dark-mode button {
+            background: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
+        }
+
+        body.dark-mode button:hover {
+            background: #000000;
+            color: #ffffff;
+        }
+
+        body.dark-mode button:disabled {
+            background: #000000;
+            color: #333333;
+            border-color: #333333;
+        }
+
+        body.dark-mode .subdivision-option {
+            border-bottom-color: #333333;
+        }
+
+        body.dark-mode .info-text {
+            color: #999999;
+        }
+
+        body.dark-mode .preset-item {
+            border-color: #ffffff;
+        }
+
+        body.dark-mode .preset-item:hover {
+            background: #1a1a1a;
         }
 
         .container {
@@ -23,13 +96,31 @@
             margin: 0 auto;
         }
 
-        h1 {
-            text-align: center;
-            color: #000000;
+        .header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 50px;
+        }
+
+        h1 {
+            color: #000000;
             font-size: 1.5em;
             font-weight: 500;
             letter-spacing: 0.5px;
+        }
+
+        .mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mode-toggle label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0;
         }
 
         .controls {
@@ -72,7 +163,7 @@
             color: #ffffff;
         }
 
-        input[type="number"], input[type="color"] {
+        input[type="number"], input[type="color"], input[type="text"], input[type="range"] {
             width: 100%;
             padding: 12px;
             border: 1px solid #000000;
@@ -81,7 +172,12 @@
             background: #ffffff;
         }
 
-        input[type="number"]:focus, input[type="color"]:focus {
+        input[type="range"] {
+            padding: 0;
+            height: 40px;
+        }
+
+        input[type="number"]:focus, input[type="color"]:focus, input[type="text"]:focus {
             outline: 2px solid #000000;
             outline-offset: 2px;
         }
@@ -89,6 +185,22 @@
         input[type="color"] {
             height: 50px;
             cursor: pointer;
+        }
+
+        .opacity-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .opacity-control input[type="range"] {
+            flex: 1;
+        }
+
+        .opacity-value {
+            min-width: 50px;
+            text-align: center;
+            font-weight: 600;
         }
 
         .canvas-container {
@@ -101,6 +213,7 @@
             align-items: center;
             justify-content: center;
             background: #ffffff;
+            position: relative;
         }
 
         canvas {
@@ -108,10 +221,40 @@
             height: auto;
         }
 
+        .preview-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 15px;
+            border: 1px solid #000000;
+        }
+
+        body.dark-mode .preview-toggle {
+            background: rgba(0, 0, 0, 0.9);
+            border-color: #ffffff;
+        }
+
+        .preview-toggle label {
+            margin: 0;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .preview-toggle input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
         .button-group {
             display: flex;
             gap: 15px;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         button {
@@ -128,12 +271,12 @@
             font-family: 'Avenir', 'Avenir Next', sans-serif;
         }
 
-        .btn-download:hover {
+        button:hover {
             background: #ffffff;
             color: #000000;
         }
 
-        .btn-download:disabled {
+        button:disabled {
             background: #ffffff;
             color: #cccccc;
             border-color: #cccccc;
@@ -210,11 +353,87 @@
             gap: 20px;
             margin-left: 32px;
         }
+
+        .presets-section {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid #000000;
+        }
+
+        .presets-section h2 {
+            font-size: 14px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+            color: #000000;
+        }
+
+        .preset-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .preset-controls input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .preset-controls button {
+            padding: 12px 30px;
+        }
+
+        .presets-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .preset-item {
+            border: 1px solid #000000;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preset-item:hover {
+            background: #f5f5f5;
+        }
+
+        .preset-name {
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+
+        .preset-delete {
+            background: none;
+            border: none;
+            color: #ff0000;
+            cursor: pointer;
+            padding: 5px;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .preset-delete:hover {
+            color: #cc0000;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎨 Outil de Grille pour Dessinateurs</h1>
+        <div class="header-controls">
+            <h1>🎨 Outil de Grille pour Dessinateurs</h1>
+            <div class="mode-toggle">
+                <input type="checkbox" id="darkMode">
+                <label for="darkMode">Mode Sombre</label>
+            </div>
+        </div>
         
         <div class="controls">
             <div class="control-group">
@@ -236,6 +455,21 @@
                 <div class="control-group">
                     <label for="gridColor">Couleur de la grille :</label>
                     <input type="color" id="gridColor" value="#000000">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label for="gridOpacity">Opacité de la grille :</label>
+                <div class="opacity-control">
+                    <input type="range" id="gridOpacity" min="0" max="100" value="100">
+                    <span class="opacity-value" id="opacityValue">100%</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="checkbox-row">
+                    <input type="checkbox" id="showRuler">
+                    <label for="showRuler" class="checkbox-label">Afficher les axes gradués</label>
                 </div>
             </div>
 
@@ -293,9 +527,22 @@
                     </div>
                 </div>
             </div>
+
+            <div class="presets-section">
+                <h2>Préréglages</h2>
+                <div class="preset-controls">
+                    <input type="text" id="presetName" placeholder="Nom du préréglage">
+                    <button id="savePresetBtn">Sauvegarder</button>
+                </div>
+                <div class="presets-list" id="presetsList"></div>
+            </div>
         </div>
 
         <div class="canvas-container">
+            <div class="preview-toggle">
+                <input type="checkbox" id="previewToggle" checked>
+                <label for="previewToggle">Afficher la grille</label>
+            </div>
             <canvas id="canvas"></canvas>
         </div>
 
@@ -313,7 +560,12 @@
         const gridSizeInput = document.getElementById('gridSize');
         const lineWidthInput = document.getElementById('lineWidth');
         const gridColorInput = document.getElementById('gridColor');
+        const gridOpacityInput = document.getElementById('gridOpacity');
+        const opacityValue = document.getElementById('opacityValue');
         const downloadBtn = document.getElementById('downloadBtn');
+        const darkModeToggle = document.getElementById('darkMode');
+        const previewToggle = document.getElementById('previewToggle');
+        const showRulerCheckbox = document.getElementById('showRuler');
 
         // Options de subdivision
         const subdivide4Checkbox = document.getElementById('subdivide4');
@@ -328,7 +580,20 @@
         const circleWidthInput = document.getElementById('circleWidth');
         const circleColorInput = document.getElementById('circleColor');
 
+        // Préréglages
+        const presetNameInput = document.getElementById('presetName');
+        const savePresetBtn = document.getElementById('savePresetBtn');
+        const presetsList = document.getElementById('presetsList');
+
         let uploadedImage = null;
+        let presets = {};
+
+        // Charger les préréglages depuis le stockage
+        const savedPresets = localStorage.getItem('gridPresets');
+        if (savedPresets) {
+            presets = JSON.parse(savedPresets);
+            renderPresets();
+        }
 
         imageUpload.addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -350,6 +615,11 @@
         gridSizeInput.addEventListener('input', drawImageWithGrid);
         lineWidthInput.addEventListener('input', drawImageWithGrid);
         gridColorInput.addEventListener('input', drawImageWithGrid);
+        gridOpacityInput.addEventListener('input', () => {
+            opacityValue.textContent = gridOpacityInput.value + '%';
+            drawImageWithGrid();
+        });
+        showRulerCheckbox.addEventListener('change', drawImageWithGrid);
 
         subdivide4Checkbox.addEventListener('change', drawImageWithGrid);
         subdivide4WidthInput.addEventListener('input', drawImageWithGrid);
@@ -363,6 +633,12 @@
         circleWidthInput.addEventListener('input', drawImageWithGrid);
         circleColorInput.addEventListener('input', drawImageWithGrid);
 
+        previewToggle.addEventListener('change', drawImageWithGrid);
+
+        darkModeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('dark-mode');
+        });
+
         function drawImageWithGrid() {
             if (!uploadedImage) return;
 
@@ -372,9 +648,14 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(uploadedImage, 0, 0);
 
+            if (!previewToggle.checked) return;
+
             const gridSize = parseInt(gridSizeInput.value);
             const lineWidth = parseInt(lineWidthInput.value);
             const gridColor = gridColorInput.value;
+            const opacity = parseInt(gridOpacityInput.value) / 100;
+
+            ctx.globalAlpha = opacity;
 
             // Calculer la taille du carré en fonction de la plus petite dimension
             const squareSize = Math.min(canvas.width, canvas.height) / gridSize;
@@ -418,6 +699,13 @@
                 ctx.lineTo(canvas.width, i * squareSize);
                 ctx.stroke();
             }
+
+            // Dessiner les axes gradués si activés
+            if (showRulerCheckbox.checked) {
+                drawRulers(squareSize, numSquaresWidth, numSquaresHeight, gridColor);
+            }
+
+            ctx.globalAlpha = 1;
         }
 
         function drawSubdivision(squareSize, numSquaresWidth, numSquaresHeight, divisions, lineWidth, color) {
@@ -431,15 +719,12 @@
                     const startX = col * squareSize;
                     const startY = row * squareSize;
 
-                    // Dessiner les subdivisions internes (sans les bords du carré principal)
                     for (let i = 1; i < divisions; i++) {
-                        // Lignes verticales
                         ctx.beginPath();
                         ctx.moveTo(startX + i * subSquareSize, startY);
                         ctx.lineTo(startX + i * subSquareSize, Math.min(startY + squareSize, canvas.height));
                         ctx.stroke();
 
-                        // Lignes horizontales
                         ctx.beginPath();
                         ctx.moveTo(startX, startY + i * subSquareSize);
                         ctx.lineTo(Math.min(startX + squareSize, canvas.width), startY + i * subSquareSize);
@@ -460,7 +745,6 @@
                     const centerX = col * squareSize + squareSize / 2;
                     const centerY = row * squareSize + squareSize / 2;
 
-                    // Vérifier que le cercle est visible dans le canvas
                     if (centerX - radius < canvas.width && centerY - radius < canvas.height) {
                         ctx.beginPath();
                         ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
@@ -468,6 +752,125 @@
                     }
                 }
             }
+        }
+
+        function drawRulers(squareSize, numSquaresWidth, numSquaresHeight, color) {
+            ctx.fillStyle = color;
+            ctx.font = 'bold 16px Avenir, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // Axe X (en haut)
+            for (let i = 0; i < numSquaresWidth; i++) {
+                const x = i * squareSize + squareSize / 2;
+                const y = 20;
+                
+                // Fond blanc pour le texte
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.fillRect(x - 15, y - 12, 30, 24);
+                
+                ctx.fillStyle = color;
+                ctx.fillText((i + 1).toString(), x, y);
+            }
+
+            // Axe Y (à gauche)
+            ctx.textAlign = 'center';
+            for (let i = 0; i < numSquaresHeight; i++) {
+                const x = 20;
+                const y = i * squareSize + squareSize / 2;
+                
+                // Fond blanc pour le texte
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.fillRect(x - 15, y - 12, 30, 24);
+                
+                ctx.fillStyle = color;
+                ctx.fillText((i + 1).toString(), x, y);
+            }
+        }
+
+        // Gestion des préréglages
+        savePresetBtn.addEventListener('click', () => {
+            const name = presetNameInput.value.trim();
+            if (!name) {
+                alert('Veuillez entrer un nom pour le préréglage');
+                return;
+            }
+
+            const preset = {
+                gridSize: gridSizeInput.value,
+                lineWidth: lineWidthInput.value,
+                gridColor: gridColorInput.value,
+                gridOpacity: gridOpacityInput.value,
+                showRuler: showRulerCheckbox.checked,
+                subdivide4: subdivide4Checkbox.checked,
+                subdivide4Width: subdivide4WidthInput.value,
+                subdivide4Color: subdivide4ColorInput.value,
+                subdivide9: subdivide9Checkbox.checked,
+                subdivide9Width: subdivide9WidthInput.value,
+                subdivide9Color: subdivide9ColorInput.value,
+                addCircle: addCircleCheckbox.checked,
+                circleWidth: circleWidthInput.value,
+                circleColor: circleColorInput.value
+            };
+
+            presets[name] = preset;
+            localStorage.setItem('gridPresets', JSON.stringify(presets));
+            presetNameInput.value = '';
+            renderPresets();
+        });
+
+        function renderPresets() {
+            presetsList.innerHTML = '';
+            for (const [name, preset] of Object.entries(presets)) {
+                const item = document.createElement('div');
+                item.className = 'preset-item';
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'preset-name';
+                nameSpan.textContent = name;
+                nameSpan.onclick = () => loadPreset(preset);
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'preset-delete';
+                deleteBtn.textContent = '×';
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    deletePreset(name);
+                };
+                
+                item.appendChild(nameSpan);
+                item.appendChild(deleteBtn);
+                presetsList.appendChild(item);
+            }
+        }
+
+        function loadPreset(preset) {
+            gridSizeInput.value = preset.gridSize;
+            lineWidthInput.value = preset.lineWidth;
+            gridColorInput.value = preset.gridColor;
+            gridOpacityInput.value = preset.gridOpacity;
+            opacityValue.textContent = preset.gridOpacity + '%';
+            showRulerCheckbox.checked = preset.showRuler;
+            
+            subdivide4Checkbox.checked = preset.subdivide4;
+            subdivide4WidthInput.value = preset.subdivide4Width;
+            subdivide4ColorInput.value = preset.subdivide4Color;
+            
+            subdivide9Checkbox.checked = preset.subdivide9;
+            subdivide9WidthInput.value = preset.subdivide9Width;
+            subdivide9ColorInput.value = preset.subdivide9Color;
+            
+            addCircleCheckbox.checked = preset.addCircle;
+            circleWidthInput.value = preset.circleWidth;
+            circleColorInput.value = preset.circleColor;
+            
+            drawImageWithGrid();
+        }
+
+        function deletePreset(name) {
+            delete presets[name];
+            localStorage.setItem('gridPresets', JSON.stringify(presets));
+            renderPresets();
         }
 
         downloadBtn.addEventListener('click', () => {
