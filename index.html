@@ -29,7 +29,8 @@
         }
 
         body.dark-mode .controls,
-        body.dark-mode .subdivisions-section {
+        body.dark-mode .subdivisions-section,
+        body.dark-mode .presets-section {
             border-color: #ffffff;
         }
 
@@ -561,7 +562,7 @@
             <div class="presets-section">
                 <h2 data-i18n="presets">Presets</h2>
                 <div class="preset-controls">
-                    <input type="text" id="presetName" data-i18n-placeholder="presetName">
+                    <input type="text" id="presetName" data-i18n-placeholder="presetName" placeholder="Preset name">
                     <button id="savePresetBtn" data-i18n="savePreset">Save</button>
                 </div>
                 <div class="presets-list" id="presetsList"></div>
@@ -692,17 +693,36 @@
         let uploadedImage = null;
         let presets = {};
 
-        // Load saved language
-        const savedLanguage = localStorage.getItem('gridLanguage');
-        if (savedLanguage) {
+        // Charger les préférences au démarrage
+        document.addEventListener('DOMContentLoaded', function() {
+            // Détecter la langue du navigateur et définir la langue par défaut
+            const browserLang = navigator.language || navigator.userLanguage;
+            const defaultLang = browserLang.startsWith('ja') ? 'ja' : 'en';
+            
+            // Charger la langue sauvegardée ou utiliser la langue du navigateur
+            const savedLanguage = localStorage.getItem('gridLanguage') || defaultLang;
             languageSelect.value = savedLanguage;
             updateLanguage(savedLanguage);
-        }
+
+            // Charger le mode sombre
+            const savedDarkMode = localStorage.getItem('gridDarkMode') === 'true';
+            if (savedDarkMode) {
+                darkModeToggle.checked = true;
+                document.body.classList.add('dark-mode');
+            }
+        });
 
         languageSelect.addEventListener('change', (e) => {
             updateLanguage(e.target.value);
         });
 
+        darkModeToggle.addEventListener('change', () => {
+            const isDarkMode = darkModeToggle.checked;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            localStorage.setItem('gridDarkMode', isDarkMode);
+        });
+
+        // Charger les presets
         const savedPresets = localStorage.getItem('gridPresets');
         if (savedPresets) {
             presets = JSON.parse(savedPresets);
@@ -748,10 +768,6 @@
         circleColorInput.addEventListener('input', drawImageWithGrid);
 
         previewToggle.addEventListener('change', drawImageWithGrid);
-
-        darkModeToggle.addEventListener('change', () => {
-            document.body.classList.toggle('dark-mode');
-        });
 
         function drawImageWithGrid() {
             if (!uploadedImage) return;
@@ -882,3 +898,104 @@
                 const x = 20;
                 const y = i * squareSize + squareSize / 2;
                 
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.fillRect(x - 15, y - 12, 30, 24);
+                
+                ctx.fillStyle = color;
+                ctx.fillText((i + 1).toString(), x, y);
+            }
+        }
+
+        savePresetBtn.addEventListener('click', () => {
+            const name = presetNameInput.value.trim();
+            if (!name) {
+                alert(translations[currentLanguage].alertPresetName);
+                return;
+            }
+
+            const preset = {
+                gridSize: gridSizeInput.value,
+                lineWidth: lineWidthInput.value,
+                gridColor: gridColorInput.value,
+                gridOpacity: gridOpacityInput.value,
+                showRuler: showRulerCheckbox.checked,
+                subdivide4: subdivide4Checkbox.checked,
+                subdivide4Width: subdivide4WidthInput.value,
+                subdivide4Color: subdivide4ColorInput.value,
+                subdivide9: subdivide9Checkbox.checked,
+                subdivide9Width: subdivide9WidthInput.value,
+                subdivide9Color: subdivide9ColorInput.value,
+                addCircle: addCircleCheckbox.checked,
+                circleWidth: circleWidthInput.value,
+                circleColor: circleColorInput.value
+            };
+
+            presets[name] = preset;
+            localStorage.setItem('gridPresets', JSON.stringify(presets));
+            presetNameInput.value = '';
+            renderPresets();
+        });
+
+        function renderPresets() {
+            presetsList.innerHTML = '';
+            for (const [name, preset] of Object.entries(presets)) {
+                const item = document.createElement('div');
+                item.className = 'preset-item';
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'preset-name';
+                nameSpan.textContent = name;
+                nameSpan.onclick = () => loadPreset(preset);
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'preset-delete';
+                deleteBtn.textContent = '×';
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    deletePreset(name);
+                };
+                
+                item.appendChild(nameSpan);
+                item.appendChild(deleteBtn);
+                presetsList.appendChild(item);
+            }
+        }
+
+        function loadPreset(preset) {
+            gridSizeInput.value = preset.gridSize;
+            lineWidthInput.value = preset.lineWidth;
+            gridColorInput.value = preset.gridColor;
+            gridOpacityInput.value = preset.gridOpacity;
+            opacityValue.textContent = preset.gridOpacity + '%';
+            showRulerCheckbox.checked = preset.showRuler;
+            
+            subdivide4Checkbox.checked = preset.subdivide4;
+            subdivide4WidthInput.value = preset.subdivide4Width;
+            subdivide4ColorInput.value = preset.subdivide4Color;
+            
+            subdivide9Checkbox.checked = preset.subdivide9;
+            subdivide9WidthInput.value = preset.subdivide9Width;
+            subdivide9ColorInput.value = preset.subdivide9Color;
+            
+            addCircleCheckbox.checked = preset.addCircle;
+            circleWidthInput.value = preset.circleWidth;
+            circleColorInput.value = preset.circleColor;
+            
+            drawImageWithGrid();
+        }
+
+        function deletePreset(name) {
+            delete presets[name];
+            localStorage.setItem('gridPresets', JSON.stringify(presets));
+            renderPresets();
+        }
+
+        downloadBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = 'image_avec_grille.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    </script>
+</body>
+</html>
